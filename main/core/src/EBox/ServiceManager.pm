@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2011 eBox Technologies S.L.
+# Copyright (C) 2008-2012 eBox Technologies S.L.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License, version 2, as
@@ -39,6 +39,9 @@ use constant GCONF_DIR => 'ServiceModule/';
 use constant CLASS => 'EBox::Module::Service';
 use constant OVERRIDE_USER_MODIFICATIONS_KEY => 'override_user_modification';
 
+my %RESTRICTED_SB = ( virt   => 1, ids => 1, mail => 1, mailfilter => 1, webmail => 1,
+                      jabber => 1, asterisk => 1 );
+
 # Group: Public methods
 
 sub new
@@ -77,7 +80,8 @@ sub moduleStatus
 {
     my ($self) = @_;
 
-    my $global = $self->{'gconfmodule'};
+    my $global  = $self->{'gconfmodule'};
+    my $restricted = ($global->edition() eq 'sb');
 
     my @mods;
     my $change = undef;
@@ -95,7 +99,7 @@ sub moduleStatus
             $status->{'status'} = undef;
             $mod->enableService(undef);
         }
-        if ( $mod->showModuleStatus() ) {
+        if ( $mod->showModuleStatus() and ((not $restricted) or (not $self->_restricted($mod))) ) {
             push (@mods, $status);
         }
     }
@@ -416,8 +420,11 @@ sub enableAllModules
     my ($self) = @_;
 
     my $global = EBox::Global->getInstance();
+    my $restricted = ($global->edition() eq 'sb');
+
     for my $modName (@{$self->_dependencyTree()}) {
         my $module = $global->modInstance($modName);
+        next if ($restricted and $self->_restricted($module));
         $module->setConfigured(1);
         $module->enableService(1);
         $self->updateModuleDigests($modName);
@@ -427,7 +434,7 @@ sub enableAllModules
             my ($ex) = @_;
             $module->setConfigured(0);
             $module->enableService(0);
-            EBox::warn("Falied to enable module $modName: "  . $ex->text());
+            EBox::warn("Failed to enable module $modName: "  . $ex->text());
         };
         $self->updateModuleDigests($modName);
     }
@@ -636,6 +643,14 @@ sub  _getMD5
     chomp $md5;
 
     return $md5;
+}
+
+# Get if the given module is restricted for this edition
+sub _restricted
+{
+    my ($self, $mod) = @_;
+
+    return (exists($RESTRICTED_SB{$mod->name()}));
 }
 
 1;

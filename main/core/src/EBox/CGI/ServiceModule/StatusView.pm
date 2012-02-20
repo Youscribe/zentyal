@@ -1,4 +1,4 @@
-# Copyright (C) 2008-2011 eBox Technologies S.L.
+# Copyright (C) 2008-2012 eBox Technologies S.L.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License, version 2, as
@@ -35,10 +35,10 @@ use EBox::Gettext;
 ## 	title [required]
 sub new
 {
-    my $class = shift;
+    my ($class) = @_;
     my $self = $class->SUPER::new( 'title' => __('Module Status Configuration'),
                                    'template' => '/moduleStatus.mas',
-            @_);
+                                   @_);
 
     bless($self, $class);
     return $self;

@@ -1,4 +1,5 @@
 HEAD
+	+ Added check for small business edition when enabling modules
 	+ Added a global method to retrieve installed server edition
 	+ Changed JS to allow the restore of the action cell when a delete
 	  action fails
