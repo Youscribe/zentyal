@@ -39,7 +39,7 @@ use constant GCONF_DIR => 'ServiceModule/';
 use constant CLASS => 'EBox::Module::Service';
 use constant OVERRIDE_USER_MODIFICATIONS_KEY => 'override_user_modification';
 
-my %RESTRICTED_SB = ( virt   => 1, ids => 1, mail => 1, mailfilter => 1, webmail => 1,
+my %RESTRICTED_SB = ( virt   => 1, mail => 1, mailfilter => 1, webmail => 1,
                       jabber => 1, asterisk => 1 );
 
 # Group: Public methods
