@@ -540,8 +540,8 @@ sub _setMainConf
         $self->_setOldHostname($hostname);
     } elsif ($oldFqdn ne $hostname) {
         $self->_changeRRDDirs($oldFqdn, $hostname);
-        $self->_removeSubscriptionLink(); # to assure we have al inkpointing to
-                                         # the good directory
+        $self->_removeSubscriptionLink(1); # to assure we have a link pointing to
+                                           # the good directory
         $self->_setOldHostname($hostname);
     }
 
@@ -554,7 +554,7 @@ sub _setMainConf
             @networkServers = @{$rs->monitorGathererIPAddresses()};
             $self->_makeSubscriptionLink($hostname);
         } else {
-            $self->_removeSubscriptionLink();
+            $self->_removeSubscriptionLink(1);
         }
     }
 
@@ -697,7 +697,7 @@ sub _removeSubscriptionLink
             # seems a subscription directory
             # Stop the service before removing to avoid race conditions
             $self->_stopService() if $stopService;
-            EBox::debug("REMOVE subscription linl $parentPath/$subdir");
+            EBox::debug("REMOVE subscription link $parentPath/$subdir");
             EBox::Sudo::root("rm $parentPath/$subdir");
         }
     }
