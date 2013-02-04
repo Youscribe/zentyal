@@ -25,6 +25,8 @@
 
     $guestAccess => 0
     $guestAccount => 'nobody'
+
+    $disable_fullaudit
 </%args>
 <%init>
 use EBox::Gettext;
@@ -93,7 +95,10 @@ use EBox::Samba;
     directory mask = 0711
 % my $av = ($antivirus xor defined($antivirus_exceptions->{'users'}));
 % my $rb = ($recycle xor defined($recycle_exceptions->{'users'}));
-% my $objects = 'acl_xattr full_audit';
+% my $objects = 'acl_xattr';
+% unless ($disable_fullaudit) {
+%   $objects .= ' full_audit';
+% }
 % if ($av) {
 %   $objects .= ' zavs';
 % }

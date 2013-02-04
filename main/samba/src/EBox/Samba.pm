@@ -1213,17 +1213,18 @@ sub writeSambaConfig
     my $hostDomain = $sysinfo->hostDomain();
 
     my @array = ();
-    push (@array, 'fs'          => EBox::Config::configkey('samba_fs'));
-    push (@array, 'prefix'      => $prefix);
-    push (@array, 'workgroup'   => $self->workgroup());
-    push (@array, 'netbiosName' => $netbiosName);
-    push (@array, 'description' => $self->description());
-    push (@array, 'ifaces'      => $interfaces);
-    push (@array, 'mode'        => 'dc');
-    push (@array, 'realm'       => $realmName);
-    push (@array, 'domain'      => $hostDomain);
-    push (@array, 'roamingProfiles' => $self->roamingProfiles());
-    push (@array, 'profilesPath' => PROFILES_DIR);
+    push (@array, 'disable_fullaudit' => EBox::Config::boolean('disable_fullaudit'));
+    push (@array, 'fs'                => EBox::Config::configkey('samba_fs'));
+    push (@array, 'prefix'            => $prefix);
+    push (@array, 'workgroup'         => $self->workgroup());
+    push (@array, 'netbiosName'       => $netbiosName);
+    push (@array, 'description'       => $self->description());
+    push (@array, 'ifaces'            => $interfaces);
+    push (@array, 'mode'              => 'dc');
+    push (@array, 'realm'             => $realmName);
+    push (@array, 'domain'            => $hostDomain);
+    push (@array, 'roamingProfiles'   => $self->roamingProfiles());
+    push (@array, 'profilesPath'      => PROFILES_DIR);
 
     push (@array, 'printers'  => $self->printersConf());
 

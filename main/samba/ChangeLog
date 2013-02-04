@@ -1,6 +1,8 @@
 HEAD
 	+ Modified 'size' field in samba_disk_usage and samba_disk_usage_report
 	  tables from INT to BIGINT
+	+ Added "disable_fullaudit" to /etc/zentyal/samba.conf
+	  to disable recording Samba VFS operations in the system log
 3.0.12
 	+ New advanced 'unmanaged_acls' option in /etc/zentyal/samba.conf to
 	  disable overwriting of ACLs when saving changes
