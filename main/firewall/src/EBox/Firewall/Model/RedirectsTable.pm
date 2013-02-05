@@ -257,17 +257,32 @@ sub _fieldDescription
             'populate' => \&protocol,
             'editable' => 1);
     push (@tableHead, $protocol);
-
-    my $external_port = new EBox::Types::PortRange(
+use Data::Dumper;
+    my $external_port = new EBox::Types::Union(
             'fieldName' => 'external_port',
             'printableName' => __('Original destination port'),
-            # FIXME: this usability improvement cannot be
-            # implemented because PortRange type cannot be
-            # optional, maybe we should fix viewCustomizer to
-            # automatically ignore hidden values even
-            # if not marked as optional
-            #'defaultSelectedType' => 'single',
-            );
+            'subtypes' =>
+            [
+            new EBox::Types::PortRange(
+                'fieldName' => 'port',
+                'printableName' => __('Port'),
+                # FIXME: this usability improvement cannot be
+                # implemented because PortRange type cannot be
+                # optional, maybe we should fix viewCustomizer to
+                # automatically ignore hidden values even
+                # if not marked as optional
+                #'defaultSelectedType' => 'single',
+                ),
+            new EBox::Types::Select(
+                'fieldName' => 'service',
+                'printableName' => __('Service'),
+                'foreignModel' => $self->modelGetter('services', 'ServiceTable'),
+                'foreignField' => 'printableName',
+                'foreignNextPageField' => 'configuration',
+                'foreignFilter' => sub { my ( $row ) = @_; EBox::error( Dumper( $row ) ); if ( $row =~ m/ssh/i ) { return 1; } },
+                'editable' => 1,),
+            ],
+            'unique' => 1);
     push (@tableHead, $external_port);
 
     my $source = new EBox::Types::Union(
@@ -311,7 +326,14 @@ sub _fieldDescription
             new EBox::Types::Port(
                 'fieldName' => 'destination_port_other',
                 'printableName' => __('Other'),
-                'editable' => 1,)
+                'editable' => 1,),
+            new EBox::Types::Select(
+                'fieldName' => 'destination_service',
+                'printableName' => __('Service'),
+                'foreignModel' => $self->modelGetter('services', 'ServiceTable'),
+                'foreignField' => 'printableName',
+                'foreignNextPageField' => 'configuration',
+                'editable' => 1,),
             ],
             'editable' => 1);
     push (@tableHead, $dport);
